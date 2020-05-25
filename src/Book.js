@@ -1,27 +1,14 @@
 import React from 'react'
 
 
-class Book  extends React.Component {
-
-	
-onBookShelfChange = (event,book) => {
-  const shelf = event.target.value  
-  this.props.onShelfChange(this.props.book, shelf)
-  
-
-
-}
- 
-render(){
-  const { book} = this.props
+function Book  (props) {  
 	return (
-
-		    <li key={book.id}>
+		    <li key={props.book.id}>
             <div className="book">
               <div className="book-top">
-                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks && book.imageLinks.thumbnail})` }}></div>
+                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${(props.book.imageLinks && props.book.imageLinks.thumbnail) || 'Thumbnail not available'})` }}></div>
                 <div className="book-shelf-changer">
-                  <select onChange={this.onBookShelfChange} defaultValue={this.props.book.shelf}>
+                  <select onChange={(event)=> {props.onShelfChange(props.book, event.target.value)}} defaultValue={props.book.shelf}>
                     <option value="move" disabled>Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>
@@ -30,12 +17,11 @@ render(){
                   </select>
                 </div>
               </div>
-              <div className="book-title">{book.title}</div>
-              <div className="book-authors">{book.authors && book.authors[0]}</div>
+              <div className="book-title">{props.book.title}</div>
+              <div className="book-authors">{(props.book.authors && props.book.authors[0]) || "Author unknown"}</div>
             </div>
          </li>
 	)
-}
 }
 
 export default Book;

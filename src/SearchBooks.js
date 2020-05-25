@@ -7,13 +7,12 @@ class SearchBooks extends React.Component{
 
   state = {
           
-          query: ' '        
+          query: ''        
   }  
 
   updateQuery = (query) => {
-
     this.setState(() => ({          
-           query: query.trim()           
+           query        
         }))
     this.props.onSearch(query)        
   }
@@ -24,8 +23,8 @@ class SearchBooks extends React.Component{
 
 
 	render(){
-    const { query, books} = this.state
-    const{ onShelfChange , onSearch, searchResults, clearSearchResults} =this.props
+    const { query} = this.state
+    const{ onShelfChange ,  searchResults} =this.props
 
 		return(			
           <div className="search-books">
@@ -53,7 +52,7 @@ class SearchBooks extends React.Component{
             </div>
             <div className="search-books-results">
               <ol className="books-grid">                
-                {  searchResults.length > 0 && searchResults.map((book) => <Book key={book.id} book={book} onShelfChange={onShelfChange}/>) }
+                {  searchResults.length > 0 ? searchResults.map((book) => <Book key={book.id} book={book} onShelfChange={onShelfChange}/>):  'No books found' }
               </ol>
             </div>
           </div>        	

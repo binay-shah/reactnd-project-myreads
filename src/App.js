@@ -9,32 +9,35 @@ import * as BooksAPI from './BooksAPI'
 class BooksApp extends React.Component {
 
   state = {
-          books: [],   
-          searchResults: []       
+    books: [],   
+    searchResults: []       
   }
 
-  componentDidMount(){
-     BooksAPI.getAll()
-      .then((books) => {
-        this.setState(() => ({
-          books
-        }))
-      }) 
+  async componentDidMount() {
+    const books = await BooksAPI.getAll()
+    this.setState({ books })
   }
 
   handleSearch = (query) => {  	
 
   	if(query.length > 0){
-  		console.log(query+" hello")
+  		
   		BooksAPI.search(query)
-      	.then((books) => {        		
-      		console.log(books) 
-      		const updatedBooks = books.map((book) => {
-      			this.state.books.filter((bs) => {
-      				book.id === bs.id ? book.shelf = bs.shelf: book.shelf = 'none'
-      			})
-      			return book
-      		})          
+      	.then((booksSearched) => {    		
+      		
+          const ids = Object.values(this.state.books).map(book => book.id)
+
+      		const updatedBooks = booksSearched.map((book) => {
+      			if (ids.includes(book.id)) {
+              const index = ids.findIndex((id)=> book.id === id)              
+              book.shelf = this.state.books[index].shelf
+            }
+            else{
+              book.shelf = 'none'
+            }
+            return book
+      		})
+
           	this.setState(() => ({
             searchResults: updatedBooks 
         }))
@@ -43,7 +46,7 @@ class BooksApp extends React.Component {
         this.setState(() => ({
           searchResults: []
         }))
-        console.log(error)
+        
       })
   	}else{
   		const searchResults = []
@@ -65,15 +68,13 @@ class BooksApp extends React.Component {
       var result = books.find(obj => {
          return obj.id === book.id
       })
-      if(result){
-        console.log('book  found')
+      if(result){        
         result.shelf = shelf
         this.setState(() => ({
           books: books
         }))
       }else{   
-        book.shelf = shelf        
-        console.log('book not found')           
+        book.shelf = shelf                   
         this.setState((prevState) => ({
           books: prevState.books.concat([book])
         }))
